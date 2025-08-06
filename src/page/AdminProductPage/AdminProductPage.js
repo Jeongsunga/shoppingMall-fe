@@ -6,6 +6,7 @@ import ReactPaginate from "react-paginate";
 import SearchBox from "../../common/component/SearchBox";
 import NewItemDialog from "./component/NewItemDialog";
 import ProductTable from "./component/ProductTable";
+import { ClipLoader } from "react-spinners";
 import {
   getProductList,
   deleteProduct,
@@ -16,7 +17,7 @@ const AdminProductPage = () => {
   const navigate = useNavigate();
   const [query] = useSearchParams();
   const dispatch = useDispatch();
-  const { productList, totalPageNum } = useSelector((state) => state.product);
+  const { productList, totalPageNum, loading } = useSelector((state) => state.product);
   const [showDialog, setShowDialog] = useState(false);
   const [searchQuery, setSearchQuery] = useState({
     page: query.get("page") || 1,
@@ -38,11 +39,20 @@ const AdminProductPage = () => {
 
   //상품리스트 가져오기 (url쿼리 맞춰서)
   useEffect(() => {
-    dispatch(getProductList());
-  }, [productList]);
+    dispatch(getProductList({ ...searchQuery }));
+  }, [query]);
 
+  // searchbox에서 검색어 읽어오기 -> 엔터를 치면 searchQuery 객체 업데이트
+  // searchQuery 객체 안 아이템 기준으로 url 새로 생성해서 호출
+  // url 쿼리 읽어오기 -> url 쿼리 기준으로 BE에 검색 조건과 함께 호출
   useEffect(() => {
-    //검색어나 페이지가 바뀌면 url바꿔주기 (검색어또는 페이지가 바뀜 => url 바꿔줌=> url쿼리 읽어옴=> 이 쿼리값 맞춰서  상품리스트 가져오기)
+    //검색어나 페이지가 바뀌면 url바꿔주기 (검색어 또는 페이지가 바뀜 => url 바꿔줌=> url쿼리 읽어옴=> 이 쿼리값 맞춰서  상품리스트 가져오기)
+    if (searchQuery.name === "") {
+      delete searchQuery.name;
+    }
+    const params = new URLSearchParams(searchQuery);
+    const query = params.toString();
+    navigate("?" + query);
   }, [searchQuery]);
 
   const deleteItem = (id) => {
@@ -63,9 +73,29 @@ const AdminProductPage = () => {
 
   const handlePageClick = ({ selected }) => {
     //  쿼리에 페이지값 바꿔주기
+    setSearchQuery({ ...searchQuery, page: selected + 1 });
   };
 
-  return (
+  const fetchProductList = () => {
+    dispatch(getProductList(searchQuery));
+  };
+
+  return loading ? (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "80vh",
+      }}
+    >
+      <ClipLoader
+        color="red"
+        size={150}
+        loading={loading}
+      />
+    </div>
+  ) : (
     <div className="locate-center">
       <Container>
         <div className="mt-2">
@@ -90,7 +120,7 @@ const AdminProductPage = () => {
           nextLabel="next >"
           onPageChange={handlePageClick}
           pageRangeDisplayed={5}
-          pageCount={100}
+          pageCount={totalPageNum}
           forcePage={searchQuery.page - 1}
           previousLabel="< previous"
           renderOnZeroPageCount={null}
@@ -113,6 +143,7 @@ const AdminProductPage = () => {
         mode={mode}
         showDialog={showDialog}
         setShowDialog={setShowDialog}
+        onSuccess={fetchProductList}
       />
     </div>
   );

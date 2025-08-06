@@ -21,7 +21,7 @@ const InitialFormData = {
   price: 0,
 };
 
-const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
+const NewItemDialog = ({ mode, showDialog, setShowDialog, onSuccess }) => {
   const { error, success, selectedProduct } = useSelector(
     (state) => state.product
   );
@@ -65,7 +65,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
     setShowDialog(false);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async(event) => {
     event.preventDefault();
     // 재고를 입력했는지 확인, 아니면 에러
     if (stock.length === 0) return setStockError(true);
@@ -76,7 +76,8 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
     // [['M',2]] 에서 {M:2}로
     if (mode === "new") {
       //새 상품 만들기
-      dispatch(createProduct({ ...formData, stock: totalStock }));
+      await dispatch(createProduct({ ...formData, stock: totalStock }));
+      onSuccess();
     } else {
       // 상품 수정하기
     }
