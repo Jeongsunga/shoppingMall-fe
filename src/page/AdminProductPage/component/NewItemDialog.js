@@ -65,10 +65,18 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog, onSuccess }) => {
     setShowDialog(false);
   };
 
-  const handleSubmit = async(event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // 재고를 입력했는지 확인, 아니면 에러
     if (stock.length === 0) return setStockError(true);
+    // 수량이 1 이상인지 검증
+    const invalidStock = stock.some(
+      (item) => parseInt(item[1], 10) < 0 || isNaN(parseInt(item[1], 10))
+    );
+    if (invalidStock) {
+      alert("재고 수량은 0개 이상이어야 합니다.");
+      return;
+    }
     // 재고를 배열에서 객체로 바꿔주기
     const totalStock = stock.reduce((total, item) => {
       return { ...total, [item[0]]: parseInt(item[1]) };
@@ -80,6 +88,9 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog, onSuccess }) => {
       onSuccess();
     } else {
       // 상품 수정하기
+      await dispatch(
+        editProduct({ ...formData, stock: totalStock, id: selectedProduct._id })
+      );
     }
   };
 
@@ -235,6 +246,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog, onSuccess }) => {
                     placeholder="number of stock"
                     value={item[1]}
                     required
+                    min={0}
                   />
                 </Col>
                 <Col sm={2}>
