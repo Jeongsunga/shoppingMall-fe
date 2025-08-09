@@ -178,6 +178,10 @@ const cartSlice = createSlice({
         state.loading = false;
         state.error = "";
         state.cartList = action.payload;
+        state.totalPrice = action.payload.reduce(
+          (total, item) => total + item.productId.price * item.qty,
+          0
+        );
       })
       .addCase(updateQty.rejected, (state, action) => {
         state.loading = false;
