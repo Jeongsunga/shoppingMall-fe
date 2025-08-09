@@ -6,7 +6,7 @@ import Sidebar from "../common/component/Sidebar";
 import Navbar from "../common/component/Navbar";
 import ToastMessage from "../common/component/ToastMessage";
 import { loginWithToken } from "../features/user/userSlice";
-import { getCartQty } from "../features/cart/cartSlice";
+import { getCartQty, initialCart } from "../features/cart/cartSlice";
 
 const AppLayout = ({ children }) => {
   const location = useLocation();
@@ -19,6 +19,8 @@ const AppLayout = ({ children }) => {
   useEffect(() => {
     if (user) {
       dispatch(getCartQty());
+    } else {
+      dispatch(initialCart()); // 수량 초기화 액션
     }
   }, [user]);
   return (
