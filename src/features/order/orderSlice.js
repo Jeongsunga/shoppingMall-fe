@@ -20,6 +20,7 @@ export const createOrder = createAsyncThunk(
     try {
       const response = await api.post("/order", payload);
       if (response.status !== 200) throw new Error(response.error);
+      dispatch(getCartQty());
       dispatch(
         showToastMessage({ message: "아이템 주문 성공!", status: "success" })
       );
