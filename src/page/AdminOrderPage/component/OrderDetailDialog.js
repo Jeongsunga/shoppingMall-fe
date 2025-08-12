@@ -14,7 +14,7 @@ const OrderDetailDialog = ({ open, handleClose }) => {
     setOrderStatus(event.target.value);
   };
   const submitStatus = () => {
-    dispatch(updateOrder({ id: selectedOrder._id, status: orderStatus }));
+    dispatch(updateOrder({ id: selectedOrder.orderNum, status: orderStatus }));
     handleClose();
   };
 

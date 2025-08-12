@@ -6,6 +6,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import OrderDetailDialog from "./component/OrderDetailDialog";
 import OrderTable from "./component/OrderTable";
 import SearchBox from "../../common/component/SearchBox";
+import { ClipLoader } from "react-spinners";
 import {
   getOrderList,
   setSelectedOrder,
@@ -16,10 +17,10 @@ const AdminOrderPage = () => {
   const navigate = useNavigate();
   const [query] = useSearchParams();
   const dispatch = useDispatch();
-  const { orderList, totalPageNum } = useSelector((state) => state.order);
+  const { orderList, totalPageNum, loading } = useSelector((state) => state.order);
   const [searchQuery, setSearchQuery] = useState({
     page: query.get("page") || 1,
-    ordernum: query.get("ordernum") || "",
+    orderNum: query.get("orderNum") || "",
   });
   const [open, setOpen] = useState(false);
 
@@ -39,8 +40,8 @@ const AdminOrderPage = () => {
   }, [query]);
 
   useEffect(() => {
-    if (searchQuery.ordernum === "") {
-      delete searchQuery.ordernum;
+    if (searchQuery.orderNum === "") {
+      delete searchQuery.orderNum;
     }
     const params = new URLSearchParams(searchQuery);
     const queryString = params.toString();
@@ -61,7 +62,18 @@ const AdminOrderPage = () => {
     setOpen(false);
   };
 
-  return (
+  return loading ? (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "80vh",
+      }}
+    >
+      <ClipLoader color="red" size={150} loading={loading} />
+    </div>
+  ) : (
     <div className="locate-center">
       <Container>
         <div className="mt-2 display-center mb-2">
@@ -69,7 +81,7 @@ const AdminOrderPage = () => {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             placeholder="오더번호"
-            field="ordernum"
+            field="orderNum"
           />
         </div>
 
@@ -81,7 +93,7 @@ const AdminOrderPage = () => {
         <ReactPaginate
           nextLabel="next >"
           onPageChange={handlePageClick}
-          pageRangeDisplayed={5}
+          pageRangeDisplayed={3}
           pageCount={totalPageNum}
           forcePage={searchQuery.page - 1}
           previousLabel="< previous"
