@@ -40,7 +40,7 @@ const LandingPage = () => {
       <Row>
         {productList.length > 0 ? (
           productList.map((item) => (
-            <Col md={3} sm={12} key={item._id}>
+            <Col md={3} sm={12} key={item._id} className="mobile-margin-top">
               <ProductCard item={item} />
             </Col>
           ))

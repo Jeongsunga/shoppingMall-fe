@@ -128,7 +128,7 @@ body{
 }
 
 .card:hover{
-  transform: scale(1.1);
+  transform: scale(1.05);
   z-index: 1;
 }
 .hide{
@@ -254,7 +254,16 @@ body{
   .mobile-sidebar{
     max-height: 104px;
   }
+
+  .mobile-margin-top:first-child {
+    margin-top: 70px
+  }
+
+  .mobile-margin-top:not(:first-child) {
+    margin-top: 10px;
+  }
 }
+
 .display-flex{
   display:flex;
   align-items: center;
