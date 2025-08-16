@@ -1,9 +1,5 @@
 import axios from "axios";
-// 상황따라 주소 다름
-// const LOCAL_BACKEND = process.env.REACT_APP_LOCAL_BACKEND;
-// const REACT_APP_PROD_BACKEND = process.env.REACT_APP_PROD_BACKEND;
-// const BACKEND_PROXY = process.env.REACT_APP_BACKEND_PROXY;
-// console.log("proxy", BACKEND_PROXY);
+
 const api = axios.create({
   baseURL: `${process.env.REACT_APP_BACKEND_PROXY}/api`,
   headers: {
