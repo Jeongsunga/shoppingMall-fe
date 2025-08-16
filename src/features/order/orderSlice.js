@@ -11,6 +11,7 @@ const initialState = {
   error: "",
   loading: false,
   totalPageNum: 1,
+  sizeList: []
 };
 
 // Async thunks
@@ -59,6 +60,18 @@ export const getOrderList = createAsyncThunk(
     }
   }
 );
+
+export const getPurchasedSizes = createAsyncThunk(
+  "order/getPurchasedSizes",
+  async(productId, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await api.get(`/order/${productId}`);
+      return response.data.data;
+    } catch(error) {
+      return rejectWithValue(error.error);
+    }
+  }
+)
 
 export const updateOrder = createAsyncThunk(
   "order/updateOrder",
@@ -110,6 +123,18 @@ const orderSlice = createSlice({
         state.orderList = action.payload;
       })
       .addCase(getOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getPurchasedSizes.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getPurchasedSizes.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+        state.sizeList = action.payload;
+      })
+      .addCase(getPurchasedSizes.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

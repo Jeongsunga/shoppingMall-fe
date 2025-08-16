@@ -284,3 +284,30 @@ body{
   margin-top: 20px;
   margin-right: 20px;
 }
+
+.detail-ring {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.review {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+  border-top: 1px solid lightgrey;
+}
+
+.review-area {
+  border: 1px solid lightgrey;
+  background-color: rgba(114, 114, 117, 0.1);
+  border-radius: 30px;
+  margin-top: 20px;
+  padding: 20px;
+  width: 100%;
+}
+
+.review-info {
+  font-size: 0.9rem; 
+  color: #6c757d;
+}
